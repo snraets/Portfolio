@@ -1,0 +1,47 @@
+SELECT
+  amendments.ODF_PARENT_ID ODF_PARENT_ID,
+  amendments.id AMENDMENTS_ID,
+  allotments.id ALLOTMENTS_ID,
+  fundingProfile.id FUNDING_ID,
+  amendmentTypeLookup.id TYPE_ID,
+  amendmentStatusLookup.id LOOKUP_ID,
+  
+  amendments.AFOSR_AMD_TYPE,
+  amendmentTypeLookup.name TYPE_NAME,
+
+  amendments.NAME AMENDMENT_NAME,
+  amendments.AFOSR_MOD_NUMB,
+  amendments.AFOSR_AMD_FY, 
+
+  amendments.AFOSR_AMD_STAT,
+  amendmentStatusLookup.name STATUS_NAME,
+
+  TO_CHAR(amendments.AFOSR_ACTION_PA,'$999,999,990.99') AFOSR_ACTION_PA,
+  TO_CHAR(amendments.AFOSR_AWAMT,'$999,999,990.99') AFOSR_AWAMT,
+  TO_CHAR(amendments.AFOSR_ACTION_OBL_AMT,'$999,999,990.99') AFOSR_ACTION_OBL_AMT,
+
+  TO_CHAR(amendments.AFOSR_OBLG,'MM/DD/YYYY') AFOSR_OBLG,
+
+  TO_CHAR(amendments.AFOSR_FUND_PERST,'MM/DD/YYYY') AFOSR_FUND_PERST,
+  TO_CHAR(amendments.AFOSR_FUND_PEREND,'MM/DD/YYYY') AFOSR_FUND_PEREND,
+
+  fundingProfile.NAME FUNDING_NAME,
+  fundingProfile.AFOSR_STATUS AFOSR_STATUS, 
+
+  fundingProfile.AFOSR_BPN AFOSR_BPN,
+  TO_CHAR(fundingProfile.AFOSR_AMT,'$999,999,990.09') FUNDING_AMOUNT,
+  
+  allotments.afosr_prog_elem AFOSR_PROG_ELEM,
+  allotments.afosr_subbpac AFOSR_SUBBPAC,
+  allotments.afosr_td_pe_bpac AFOSR_TD_PE_BPAC
+FROM
+odf_ca_afosr_funding_prof fundingProfile
+FULL OUTER JOIN odf_ca_afors_amendment amendments ON amendments.id = fundingProfile.afosr_assoc_contract
+LEFT JOIN odf_ca_afosr_allotment allotments ON fundingProfile.afosr_accounts2 = allotments.code
+LEFT JOIN 
+(SELECT ID, name, lookup_code FROM cmn_lookups_v WHERE lookup_type = 'AFOSR_AMD_TYPE' and language_code = 'en') amendmentTypeLookup 
+ON amendments.afosr_amd_type = amendmentTypeLookup.lookup_code
+LEFT JOIN 
+(SELECT ID, name, lookup_code FROM cmn_lookups_v WHERE lookup_type = 'AFOSR_AMD_STAT' and language_code = 'en') amendmentStatusLookup 
+ON amendments.afosr_amd_stat = amendmentstatusLookup.lookup_code
+ORDER BY amendments.AFOSR_AMD_FY ASC
