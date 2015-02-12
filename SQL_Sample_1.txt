@@ -1,0 +1,43 @@
+SELECT 
+  DECODE(RESPONSE_ID, NULL, rs_baa_responses_id_seq.NEXTVAL, RESPONSE_ID) RESPONSE_ID,
+  BR_PROPOSAL_NBR_FK,
+  ACT_WF_ID_FK,
+  QUESTION_NBR,
+  FK_OPPORTUNITY_ID,
+  CRITERIA,
+  QUESTION_TEXT,
+  RESPONSE,
+  DECODE(RESPONSE_ID, NULL, 'INSERT', 'UPDATE') TRANSACTION_TYPE
+FROM
+(SELECT 
+  res.RESPONSE_ID,
+  res.BR_PROPOSAL_NBR_FK,
+  res.ACT_WF_ID_FK, 
+  qes.FK_OPPORTUNITY_ID,
+  qes.QUESTION_NBR, 
+  qes.CRITERIA, 
+  qes.QUESTION_TEXT,
+  res.RESPONSE
+FROM ( 
+        select 
+            q.FK_OPPORTUNITY_ID,
+            q.QUESTION_NBR, 
+            q.CRITERIA, 
+            TO_CHAR(q.QUESTION_TEXT) "QUESTION_TEXT" from RS_BAA_QUESTIONS q 
+          WHERE
+            (%1 = q.FK_OPPORTUNITY_ID) 
+            AND (%3 is null or q.CRITERIA = %3) 
+        union select 
+            %1 "FK_OPPORTUNITY_ID", 
+            0 "QUESTION_NBR", 
+            'UNIQUE' "CRITERIA", 
+            'qtext' "QUESTION_TEXT" 
+          from dual 
+          where 
+            %3 = 'UNIQUE' 
+     ) qes 
+LEFT JOIN (SELECT * FROM RS_BAA_RESPONSES WHERE %2 = ACT_WF_ID_FK OR %4 = ACT_WF_ID_FK) res 
+ON qes.FK_OPPORTUNITY_ID = res.FK_OPPORTUNITY_ID and 
+   qes.QUESTION_NBR = res.QUESTION_NBR and 
+   qes.CRITERIA = res.CRITERIA
+ORDER BY CRITERIA, QUESTION_NBR)
