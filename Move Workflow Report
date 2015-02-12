@@ -1,0 +1,107 @@
+[LL_WEBREPORT_EXCLUDEHTML /]<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Move Workflow</title>
+
+    <style type="text/css">
+
+        .launchLink:hover
+        {
+            color:blue;cursor:pointer
+        }
+
+    </style>
+
+</head>
+<body ng-app="workflowManagerApp" ng-controller="workflowController">  <!---->
+
+    <div>
+        <div style="display:inline-block">
+            <span>Livelink Workflow ID</span>
+            <input type="text" ng-model="workflowID" />
+            <input type="button" ng-click="retrieveWorkflow()" value="Find Workflow" ng-disabled="submissionActive" />
+            <input type="button" value="Start Random Basic" ng-click="startRandom('basic')" ng-disabled="submissionActive" />
+            <input type="button" value="Start Random Increment" ng-click="startRandom('incremental')" ng-disabled="submissionActive" />
+            <input type="button" value="Start Random Option" ng-click="startRandom('option')" ng-disabled="submissionActive" />
+            <input type="button" value="Start Random Admin" ng-click="startRandom('admin')" ng-disabled="submissionActive" />
+            <input type="button" value="Start Random Additional" ng-click="startRandom('additional')" ng-disabled="submissionActive" />
+        </div>
+        <div style="display:inline-block" ng-show="displayRestartWF">
+            <input type="button" value="Restart Action" ng-click="restartWorkflow()" ng-disabled="submissionActive" />
+            <input type="button" value="Delete Workflow" ng-click="deleteWorkflow()" ng-disabled="submissionActive" />
+        </div>
+    </div>
+
+    <h1 class="launchLink" open-Workflow>{{currentSteps[0].SUBWORK_TITLE}}</h1>
+
+    <div ng-show="emptyAuditResults">
+        <h2>No audit record was found.</h2>
+    </div>
+
+    <div style="margin-top:3em">
+        <table class="tableFormat">
+            <tbody>
+                <tr ng-repeat="record in auditRecords | orderBy:auditColumn:auditColumnOrder ">
+                    <td style="padding:.5em">{{record.STEP_NAME}}</td>
+                    <td style="padding:.5em">{{record.BUTTON_NAME}}</td>
+                    <td style="padding:.5em">{{record.MY_TIMECOMPLETED}}</td>
+                    <td style="padding:.5em">{{record.PERFORMER_NAME}}</td>
+                    <td style="padding:.5em">{{record.DAYS_AT_STEP}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div ng-show="emptyWorkflowResults">
+        <h2>No workflow steps were found.</h2>
+    </div>
+
+    <div ng-show="reviewSteps" style="margin-top:1.5em">
+        <div style="margin-bottom:1.5em">
+            <div style="display:inline-block">
+                <label style="margin-right:1em">Division</label>
+                <input type="checkbox" ng-model="Division" />
+            </div>
+            <div style="display:inline-block">
+                <label style="margin-right:1em">Policy</label>
+                <input type="checkbox" ng-model="Policy" />
+            </div>
+            <div style="display:inline-block">
+                <label style="margin-right:1em">Legal</label>
+                <input type="checkbox" ng-model="Legal" />
+            </div>
+        </div>
+        <input type="button" value="Send On" ng-click="sendReview()" style="margin-right:1em" />
+        <input type="button" value="Cancel" ng-click="toggleReviewSteps()" />
+    </div>
+
+    <div style="margin-top:3em;margin-bottom: 3em" ng-repeat="step in currentSteps" ng-show="displaySteps">
+        <div>
+            <h3 class="launchLink" open-Step taskid="{{step.SUBWORKTASK_TASKID}}">{{step.SUBWORKTASK_TITLE}}</h3>
+
+            <span style="margin-right:1em" ng-repeat="button in step.buttons" >
+                <input type="button" ng-click="submitStep(step, button)" value="{{button.buttonName}}" ng-disabled="submissionActive" ng-show="button.showButton" />
+            </span>
+        </div>
+    </div>
+
+</body>
+
+    <script type="text/javascript" src="/support/afrl/AFOSR/scripts/angular.min.js"></script>
+    <script type="text/javascript" src="/livelink/llisapi.dll?func=ll&objId=20053095&objAction=download&viewType=1"></script>
+    <script type="text/javascript" src="/livelink/llisapi.dll?func=ll&objId=20777529&objAction=download&viewType=1"></script>
+
+    <script type="text/javascript">
+
+        window.AW_READY_STEPS = "[LL_REPTAG_"AW_READY_STEPS" NODEINFO:ID /];";
+        window.AW_AUDIT_LOG_WORKFLOW = "[LL_REPTAG_"AW_AUDIT_LOG_WORKFLOW" NODEINFO:ID /]";
+        window.AW_U_RS_ACTION_WF_EVAL = "[LL_REPTAG_"AW_U_RS_ACTION_WF_EVAL" NODEINFO:ID /]";
+        window.AW_I_RS_WF_AUDIT_LOG = "[LL_REPTAG_"AW_I_RS_WF_AUDIT_LOG" NODEINFO:ID /]";
+        window.CURRENT_USER = "[LL_REPTAG_USERID /]";
+        window.AW_RANDOM_WF = "[LL_REPTAG_"AW_RANDOM_WF" NODEINFO:ID /]";;
+
+    </script>
+
+</html>
