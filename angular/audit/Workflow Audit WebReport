@@ -1,0 +1,162 @@
+[LL_WEBREPORT_EXCLUDEHTML /]<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Workflow Audit Report</title>
+    <link rel="shortcut icon" href="https:/support/favicon.ico" type="image/x-icon" />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />      
+
+    <script type="text/javascript">
+        window.FK_CLARITY_PROFILE_ID = [LL_REPTAG_&FK_CLARITY_PROFILE_ID /];
+        window.AW_AUDIT_REPORT_CLARITY_DATA = [LL_REPTAG_"AW_AUDIT_REPORT_CLARITY_DATA" NODEINFO:ID /];
+    </script>
+
+     <!-- Link to Award Management CSS -->
+    <link type="text/css" href="/livelink/llisapi.dll/[LL_REPTAG_"AW_CSS" NODEINFO:ID /]/AW.css?func=doc.Fetch&nodeid=[LL_REPTAG_"AW_CSS" NODEINFO:ID /]" rel="stylesheet" media="all" />
+    <link type="text/css" href="/support/afrl/AFOSR/awardAction/css/jquery-ui-1.10.4.css" rel="stylesheet" media="all" />
+    <!-- CSS End -->
+
+        <script type="text/javascript">
+            var awStepName = "[LL_REPTAG_MYID NODEINFO:NAME /]";
+            var coreVariables = {};
+    </script>
+
+</head>
+
+<body ng-app="auditReportModule" ng-controller="ReportController" id="WFAR">
+
+    <div id="embelishment"></div>
+        <div id="WFARmaster">
+          <div id="header">
+              <!--[LL_WEBREPORT_SUBWEBREPORT NODEID:[LL_REPTAG_"AW_STEP_HEADER_MIN" NODEINFO:ID /] /]-->
+                    <div id="systemHeader">
+                        <div id="shieldHolder" style="width:61px">
+                            <img id="afosrShield" src="/support/afrl/AFOSR/awardAction/graphics/afosrShieldTop_icon.png" alt="AFOSR Shield" />
+                            </div>
+                        <div id="title1">AFOSR
+                        </div>
+                        <div id="title2">Award Management: Livelink Workflows
+                        </div>
+                        <div class="clear">
+                        </div>
+                    </div>
+                    
+                    <div id="quickLinksHolder">
+                        <div id="quickLinksHeader">
+                            <div style="float:right">
+                                <a href={{homeLiveLink}} target="_blank"><div id="home2" class="awImgButton2" title="Livelink Home">
+                                </div></a>
+                                <a href={{homeHelp}} target="_blank"><div id="help2" class="awImgButton2" title="Help">
+                                </div></a>
+                                <a href={{homeClarity}} target="_blank">
+                                <div id="clarity2" class="awImgButton2" title="Clarity">
+                                </div></a>
+                               <a href={{homeSharePoint}} target="_blank">
+                                <div id="sharepoint2" class="awImgButton2" title="SharePoint">
+                                </div></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="clear">
+                    </div>
+            </div>
+    
+            <div id="content">
+                <div id="stepNameHolder">
+                    <div id="stepName2" >
+                       Workflow Audit Report
+                   </div>			
+                </div>
+				<div id="WFARbody">
+					<div id="WFARdata" style="margin-top: 1.3em;">
+						<div id="WFARdatapadding">                    
+		
+
+                        	<div style="margin-left:1.7em;margin-bottom:.8em; margin-top: 1.4em; width:50em;">
+				<p><em style="font-weight:bold">{{subWorkTitle()}}</em></p>
+                                       <p><em style="font-weight:bold">To filter results, begin typing a step name, button name, or performer in the fields below:</em></p>
+                        	</div>
+
+			<div style="position:relative">
+                        	<div style="margin-left:1.7em; margin-top: 2em; width:15em;display:inline-block;">
+                                <div style="width: 10em;"><label>Step Name</label>
+                                </div>
+                                <input ng-model="search.STEP_NAME" />
+                        	</div>
+	                        <div style="margin-left:5em;margin-top:2em;width:15em;display:inline-block;">
+                                <div style="width:10em;"><label>Button Name</label>
+                                </div>
+                                <input ng-model="search.BUTTON_NAME" />
+                       		</div>
+	                        <div style="margin-left:5em; width:15em;display:inline-block;margin-top:2em;">
+                                <div style="width:10em;"><label>Performer</label>
+                                </div>
+                                <input ng-model="search.PERFORMER_NAME" />
+                       		</div>
+                           </div>
+                           
+                            <div ng-show="auditList" id="workflowAuditReport" style="margin-top:3em; margin-left:1.7em; margin-right:1.7em; margin-bottom:.5em;">
+                                <table class="tableFormat">
+                                    <thead>
+                                        <tr style="font-weight:bold">
+                                            <td style="width:25em" >
+                                                <div class="columnHeader" ><a ng-click="auditColumn = 'STEP_NAME'; auditColumnOrder=!auditColumnOrder" >Step Name</a></div>
+                                                <div class="arrowHolder" ng-class="{ 'ui-icon ui-icon-triangle-1-s':auditColumnOrder && auditColumn == 'STEP_NAME', 'ui-icon ui-icon-triangle-1-n':!auditColumnOrder && auditColumn == 'STEP_NAME' }"></div>
+                                                <div class="clear"></div>
+                                            </td>
+                                            <td style="width:12em" >
+                                                <div class="columnHeader"><a ng-click="auditColumn = 'BUTTON_NAME'; auditColumnOrder=!auditColumnOrder" >Button Name</a></div>
+                                                <div class="arrowHolder" ng-class="{ 'ui-icon ui-icon-triangle-1-s':auditColumnOrder && auditColumn == 'BUTTON_NAME', 'ui-icon ui-icon-triangle-1-n':!auditColumnOrder && auditColumn == 'BUTTON_NAME' }"></div>
+                                                <div class="clear"></div>
+                                            </td>
+                                            <td style="width:12em" >
+                                                <div class="columnHeader"><a ng-click="auditColumn = 'MY_TIMECOMPLETED'; auditColumnOrder=!auditColumnOrder" >Completion Time</a></div>
+                                                <div class="arrowHolder" ng-class="{ 'ui-icon ui-icon-triangle-1-s':auditColumnOrder && auditColumn == 'MY_TIMECOMPLETED', 'ui-icon ui-icon-triangle-1-n':!auditColumnOrder && auditColumn == 'MY_TIMECOMPLETED' }"></div> <!---->
+                                                <div class="clear"></div>
+                                            </td>
+                                            <td style="width:12em" >
+                                                <div class="columnHeader"><a ng-click="auditColumn = 'PERFORMER_NAME'; auditColumnOrder=!auditColumnOrder" >Performer</a></div>
+                                                <div class="arrowHolder" ng-class="{ 'ui-icon ui-icon-triangle-1-s':auditColumnOrder && auditColumn == 'PERFORMER_NAME', 'ui-icon ui-icon-triangle-1-n':!auditColumnOrder && auditColumn == 'PERFORMER_NAME' }"></div>
+                                                <div class="clear"></div>
+                                            </td>
+                                            <td style="width:10em" >
+                                                <div class="columnHeader"><a ng-click="auditColumn = 'DAYS_AT_STEP'; auditColumnOrder=!auditColumnOrder" >Days at Step</a></div>
+                                                <div class="arrowHolder" ng-class="{ 'ui-icon ui-icon-triangle-1-s':auditColumnOrder && auditColumn == 'DAYS_AT_STEP', 'ui-icon ui-icon-triangle-1-n':!auditColumnOrder && auditColumn == 'DAYS_AT_STEP' }"></div>
+                                                <div class="clear"></div>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="record in auditRecords | orderBy:auditColumn:auditColumnOrder | filter:search ">
+                                            <td>{{record.STEP_NAME}}</td>
+                                            <td>{{record.BUTTON_NAME}}</td>
+                                            <td>{{record.MY_TIMECOMPLETED}}</td>
+                                            <td>{{record.PERFORMER_NAME}}</td>
+                                            <td style="text-align:right">{{record.DAYS_AT_STEP}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                        	</div>
+                            <div ng-show="message" style="margin-top:3em; margin-left:1.7em; margin-right:1.7em; margin-bottom:.5em;">
+                                There are no records found.
+                            </div>
+                     	</div>
+                 	</div>
+              	</div>
+ 
+                <div class="clear">
+                </div>
+ 
+ 			</div>
+       </div>
+
+    <script type="text/javascript" src="/support/afrl/AFOSR/scripts/angular.min.js"></script>
+    <script type="text/javascript" src="/livelink/llisapi.dll?func=ll&objId=20053095&objAction=download&viewType=1"></script>
+    <script type="text/javascript" src="/livelink/llisapi.dll?func=ll&objId=20766329&objAction=download&viewType=1"></script>
+
+</body>
+
+</html>
